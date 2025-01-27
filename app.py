@@ -125,7 +125,19 @@ class MLP(object):
     
     
     return error  
+   
+  
+  def gradient_decent(self, learning_rate):
+    # Loop over all weights
+    for i in range(len(self.weights)):
+      weights = self.weights[i]
+      # print(f"Original W{i}:\n {weights}")
+      derivatives = self.derivatives[i]
+      weights += derivatives * learning_rate
+      # print(f"Updated W{i}:\n {weights}")
       
+      
+  
         
   def _sigmoid_derivative(self, x):
     return x * (1.0 - x)
@@ -160,7 +172,12 @@ if __name__ == "__main__":
   error = target - output
   
   # Back propagation
-  mlp.back_propagate(error, verbose=True)
+  mlp.back_propagate(error, verbose=False)
+  
+  
+  # Apply gradient decent
+  mlp.gradient_decent(learning_rate=0.1)
+  
   
       
 
