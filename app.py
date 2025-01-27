@@ -1,5 +1,5 @@
 import numpy as np
-
+from random import random
 # Back propagation
   # save activations and derivatives
   # implement back-propagation
@@ -137,7 +137,36 @@ class MLP(object):
       # print(f"Updated W{i}:\n {weights}")
       
       
-  
+  def train(self, inputs, targets, epochs, learning_rate):
+    # Loop over epochs
+    for epoch in range(epochs):
+      
+      
+      sum_error = 0
+      
+      # loop over the input and target values
+      for (input, target) in zip(inputs, targets):
+        # Forward propagation
+        output = self.forward_propagate(input)
+        # Calculate the error
+        error = target - output
+        # Back propagation
+        self.back_propagate(error, verbose=False)
+        # Apply gradient decent
+        self.gradient_decent(learning_rate)
+        
+        # calculate and append the error
+        sum_error += self.mse(target, output)
+        
+      # report error 
+      print(f"Epoch: {epoch},\n Error: {sum_error / len(inputs)}")
+      
+          
+              
+      
+  def mse(self, target, output):
+    return np.mean((target - output) ** 2)
+        
         
   def _sigmoid_derivative(self, x):
     return x * (1.0 - x)
@@ -158,25 +187,37 @@ class MLP(object):
   
 if __name__ == "__main__":
   
+  # Create a dummy dataset to train network for the sim operation
+  """
+  inputs = array([[0.1, 0.2], [0.3, 0.4]])
+  targets = array([[0.3], [0.7]])
+  """
+  inputs = np.array([[random() / 2 for _ in range(2)] for _ in range(1000)])
+  targets = np.array([[i[0] + i[1]] for i in inputs])
+  
+
   # Create an instance of the MLP class
   mlp = MLP(2, [5], 1)
   
-  # Create dummy data
-  input = np.array([0.1, 0.2]) 
-  target = np.array([0.3])
   
-  # Forward propagation
+  # Train the MLP
+  mlp.train(inputs=inputs, targets=targets, epochs=50, learning_rate=0.1)
+  
+  
+  
+  # Making prediction
+  input =  np.array([0.3, 0.1])
+  target = np.array([0.4])
+  
   output = mlp.forward_propagate(input)
-  
-  # calculate the error
-  error = target - output
-  
-  # Back propagation
-  mlp.back_propagate(error, verbose=False)
+  print(f"My network believes that {input[0]} + {input[1]} = {output[0]}")
   
   
-  # Apply gradient decent
-  mlp.gradient_decent(learning_rate=0.1)
+  
+  
+  
+  
+  
   
   
       
